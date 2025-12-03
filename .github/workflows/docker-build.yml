@@ -30,4 +30,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/godot-jvm:latest
-            ghcr.io/${{ github.repository_owner }}/godot-jvm:0.1.0
+            ghcr.io/${{ github.repository_owner }}/godot-jvm:4.5.1-0.14.3

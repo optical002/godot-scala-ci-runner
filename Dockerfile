@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM debian:bookworm-slim
 
 LABEL org.opencontainers.image.source=https://github.com/optical002/godot-scala-ci-runner
 LABEL org.opencontainers.image.description="CI runner for building Godot with Kotlin/JVM support"
@@ -6,38 +6,37 @@ LABEL org.opencontainers.image.licenses=MIT
 
 # Prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
+ENV GODOT_VERSION=4.5.1.stable.jvm.0.14.3
 
-# Install Godot build dependencies + JVM toolchain
-RUN apt-get update && apt-get install -y \
-    # Godot build deps
-    build-essential \
-    scons \
-    pkg-config \
-    libx11-dev \
-    libxcursor-dev \
-    libxinerama-dev \
-    libgl1-mesa-dev \
-    libglu1-mesa-dev \
-    libasound2-dev \
-    libpulse-dev \
-    libfreetype6-dev \
-    libssl-dev \
-    libudev-dev \
-    libxi-dev \
-    libxrandr-dev \
-    # JVM / Scala
-    openjdk-17-jdk \
-    # Tools
-    git \
-    curl \
-    unzip \
-    python3 \
+# Minimal runtime deps for Godot headless
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    libgl1 \
+    libxi6 \
+    libxcursor1 \
+    libxinerama1 \
+    libxrandr2 \
+    libfontconfig1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install sbt
-RUN curl -fsSL https://github.com/sbt/sbt/releases/download/v1.10.11/sbt-1.10.11.tgz | tar xz -C /opt && \
-    ln -s /opt/sbt/bin/sbt /usr/local/bin/sbt
+# Download Godot editor
+ADD https://github.com/optical002/godot-scala-ci-runner/releases/download/1.0/godot.linuxbsd.editor.x86_64.jvm.0.14.3 /usr/local/bin/godot
+RUN chmod +x /usr/local/bin/godot
 
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+# Create export templates directory
+RUN mkdir -p /root/.local/share/godot/export_templates/${GODOT_VERSION}
+
+# Download export templates
+ADD https://github.com/optical002/godot-scala-ci-runner/releases/download/1.0/godot.linuxbsd.template_debug.x86_64.jvm.0.14.3 \
+    /root/.local/share/godot/export_templates/${GODOT_VERSION}/linux_debug.x86_64
+ADD https://github.com/optical002/godot-scala-ci-runner/releases/download/1.0/godot.linuxbsd.template_release.x86_64.jvm.0.14.3 \
+    /root/.local/share/godot/export_templates/${GODOT_VERSION}/linux_release.x86_64
+ADD https://github.com/optical002/godot-scala-ci-runner/releases/download/1.0/godot.windows.template_debug.x86_64.jvm.0.14.3.exe \
+    /root/.local/share/godot/export_templates/${GODOT_VERSION}/windows_debug_x86_64.exe
+ADD https://github.com/optical002/godot-scala-ci-runner/releases/download/1.0/godot.windows.template_release.x86_64.jvm.0.14.3.exe \
+    /root/.local/share/godot/export_templates/${GODOT_VERSION}/windows_release_x86_64.exe
+
+# Create version.txt
+RUN echo "${GODOT_VERSION}" > /root/.local/share/godot/export_templates/${GODOT_VERSION}/version.txt
 
 WORKDIR /workspace
