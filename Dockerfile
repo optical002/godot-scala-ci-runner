@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxkbcommon0 \
     patchelf \
     git \
+    git-lfs \
     && rm -rf /var/lib/apt/lists/*
 
 # Download Godot editor
