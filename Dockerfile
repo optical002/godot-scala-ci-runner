@@ -7,6 +7,7 @@ LABEL org.opencontainers.image.licenses=MIT
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GODOT_VERSION=4.5.1.stable.jvm.0.14.3
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV XDG_DATA_HOME=/root/.local/share
 
 # Runtime deps for Godot + JVM
 RUN apt-get update && apt-get install -y --no-install-recommends \
