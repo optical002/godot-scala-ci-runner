@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxinerama1 \
     libxrandr2 \
     libfontconfig1 \
+    libxkbcommon0 \
     patchelf \
     && rm -rf /var/lib/apt/lists/*
 
