@@ -9,7 +9,7 @@ ENV GODOT_VERSION=4.5.1.stable.jvm.0.14.3
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV XDG_DATA_HOME=/root/.local/share
 
-# Runtime deps for Godot + JVM
+# Runtime deps for Godot + JVM + Scala Native
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libgl1 \
@@ -28,6 +28,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     gnupg \
     apt-transport-https \
+    clang \
+    libgc-dev \
+    libunwind-dev \
+    libre2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install SBT
